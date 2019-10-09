@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UserSecretsId>8d87d689-bb76-4434-8ee4-9f3d7f3bae89</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
+    <PackageReference Include="Serilog" Version="2.8.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorMud.BusinessLogic\BlazorMud.BusinessLogic.csproj" />
+    <ProjectReference Include="..\BlazorMud.Contracts\BlazorMud.Contracts.csproj" />
+    <ProjectReference Include="..\BlazorMud.DataAccess\BlazorMud.DataAccess.csproj" />
+  </ItemGroup>
+
+</Project>

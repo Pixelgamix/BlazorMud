@@ -1,0 +1,48 @@
+﻿@page "/account/login"
+
+@using BlazorMud.Contracts.Services
+@using System.ComponentModel.DataAnnotations
+@inject IAccountService AccountService
+
+<h1>Login</h1>
+
+<EditForm Model="@UsernameAndPassword" OnValidSubmit="@DoLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="username">Username</label>
+        <InputText id="username" @bind-Value="@UsernameAndPassword.Username" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <InputText id="password" @bind-Value="@UsernameAndPassword.Password" type="password" class="form-control" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Login</button>
+    </div>
+    <div class="form-group">
+        <small>Don't have an account yet? Go and <a href="account/register">register an account</a>!</small>
+    </div>
+</EditForm>
+
+@code {
+
+    public class UsernamePasswordCombo
+    {
+        [Required]
+        [StringLength(32, ErrorMessage = "Username is too long.")]
+        public string Username { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+    }
+
+    public UsernamePasswordCombo UsernameAndPassword { get; set; } = new UsernamePasswordCombo();
+
+    public void DoLogin()
+    {
+        AccountService.Login(UsernameAndPassword.Username, UsernameAndPassword.Password);
+    }
+
+}
+
