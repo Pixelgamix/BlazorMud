@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace BlazorMud.Contracts.Database
 {
     public interface IDatabaseContext
     {
-        void Execute(Action<IRepositoryContext> unitOfWork);
+        Task ExecuteAsync(Func<IRepositoryContext, Task> unitOfWork);
     }
 }

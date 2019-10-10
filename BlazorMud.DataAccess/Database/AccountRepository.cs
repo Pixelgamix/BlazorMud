@@ -3,6 +3,8 @@ using BlazorMud.Contracts.Database;
 using System;
 using System.Linq;
 using NHibernate;
+using NHibernate.Linq;
+using System.Threading.Tasks;
 
 namespace BlazorMud.DataAccess.Database
 {
@@ -10,16 +12,25 @@ namespace BlazorMud.DataAccess.Database
     {
         public ISession Session;
 
-        public void AddNewAccount(Account account)
+        public Task AddNewAccountAsync(Account account)
         {
-            Session.Save(account);
+            if (account is null) throw new ArgumentNullException(nameof(account));
+
+            return Session.SaveAsync(account);
         }
 
-        public Account GetAccountByName(string accountName)
+        public Task<bool> ExistsAsync(string accountName)
         {
             if (accountName is null) throw new ArgumentNullException(nameof(accountName));
 
-            return Session.Query<Account>().Where(x => x.AccountName == accountName).FirstOrDefault();
+            return Session.Query<Account>().Where(x => x.AccountName == accountName).AnyAsync();
+        }
+
+        public Task<Account> GetAccountByNameAsync(string accountName)
+        {
+            if (accountName is null) throw new ArgumentNullException(nameof(accountName));
+
+            return Session.Query<Account>().Where(x => x.AccountName == accountName).FirstOrDefaultAsync();
         }
     }
 }

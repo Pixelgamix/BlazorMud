@@ -1,5 +1,6 @@
 ﻿using BlazorMud.Contracts.Database;
 using System;
+using System.Threading.Tasks;
 
 namespace BlazorMud.DataAccess.Database
 {
@@ -16,7 +17,7 @@ namespace BlazorMud.DataAccess.Database
             _RepositoryContext = repositoryContext ?? throw new ArgumentNullException(nameof(repositoryContext));
         }
 
-        public void Execute(Action<IRepositoryContext> unitOfWork)
+        public async Task ExecuteAsync(Func<IRepositoryContext, Task> unitOfWork)
         {
             if (unitOfWork == null) throw new ArgumentNullException(nameof(unitOfWork));
 
@@ -27,13 +28,13 @@ namespace BlazorMud.DataAccess.Database
 
             try
             {
-                unitOfWork(_RepositoryContext);
-                session.Flush();
-                transaction.Commit();
+                await unitOfWork(_RepositoryContext);
+                await session.FlushAsync();
+                await transaction.CommitAsync();
             }
             catch
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
                 throw;
             }
             finally

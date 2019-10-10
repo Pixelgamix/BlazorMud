@@ -3,7 +3,7 @@ using Xunit;
 
 namespace BlazorMud.BusinessLogic.Test
 {
-    public class PasswordHasherTest
+    public sealed class PasswordHasherTest
     {
         [Fact]
         public void CreateHashedPassword_IsSamePassword()

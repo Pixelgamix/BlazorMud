@@ -70,8 +70,6 @@ namespace BlazorMud
             Configuration.GetSection("Database").Bind(databaseSettings);
             builder.RegisterInstance(databaseSettings).As<DatabaseSettings>();
 
-            builder.RegisterType<Data.WeatherForecastService>().AsSelf();
-
             builder.RegisterModule<BusinessLogic.AutofacModule>();
             builder.RegisterModule<DataAccess.AutofacModule>();
         }

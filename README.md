@@ -3,16 +3,26 @@ An _experimental_ [MUD](https://en.wikipedia.org/wiki/MUD) made with [.NET Core 
 
 This project is a playground for experimenting, in very early stages and extremely work in progress. Expect stuff to change a lot. There is no guarantee that this project will evolve into something useful or end up being complete.
 
-# Requirements
-## For running
+## Frameworks used
+- [ASP.NET Core](https://dotnet.microsoft.com/learn/aspnet/what-is-aspnet-core)
+- [Autofac](https://autofac.org/)
+- Blazor
+- [Fluent NHibernate](https://github.com/FluentNHibernate/fluent-nhibernate)
+- [Moq](https://github.com/moq/moq4)
+- [NHibernate](https://nhibernate.info/)
+- [Serilog](https://serilog.net/)
+- [xUnit.net](https://xunit.net/)
+
+## Requirements
+### For running
 - .NET Core 3.0
 - [docker](https://www.docker.com/) and up-to-date version of [docker-compose](https://docs.docker.com/compose/)
-## For development
+### For development
 - .NET Core 3.0 SDK
 - docker and up-to-date version of docker-compose
 - [Visual Studio 2019](https://visualstudio.microsoft.com/vs) _or_ [Visual Studio Code](https://code.visualstudio.com/) _or_ [JetBrains Rider](https://www.jetbrains.com/rider/)
 
-# Installation for Linux
+## Installation for Linux
 1. Clone the repository
 2. Open a terminal in the cloned folder
 3. Use `docker build . -t blazormud` to build the BlazorMud docker image

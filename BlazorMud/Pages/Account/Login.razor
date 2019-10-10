@@ -1,29 +1,50 @@
 ﻿@page "/account/login"
 
+@using BlazorMud.Contracts.Entities
 @using BlazorMud.Contracts.Services
 @using System.ComponentModel.DataAnnotations
 @inject IAccountService AccountService
+@inject Microsoft.AspNetCore.Components.NavigationManager Navigation
 
 <h1>Login</h1>
 
-<EditForm Model="@UsernameAndPassword" OnValidSubmit="@DoLogin">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="form-group">
-        <label for="username">Username</label>
-        <InputText id="username" @bind-Value="@UsernameAndPassword.Username" class="form-control" />
+@if (LoginResult is null)
+{
+    <EditForm Model="@UsernameAndPassword" OnValidSubmit="@DoLogin">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="username">Username</label>
+            <InputText id="username" @bind-Value="@UsernameAndPassword.Username" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <InputText id="password" @bind-Value="@UsernameAndPassword.Password" type="password" class="form-control" />
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+        <div class="form-group">
+            <small>Don't have an account yet? Go and <a href="account/register">register an account</a>!</small>
+        </div>
+    </EditForm>
+}
+else if (LoginResult.IsSuccess)
+{
+    <div class="alert alert-success" role="alert">
+        <h2>Your are now logged in!</h2>
+        @LoginResult.Message
     </div>
-    <div class="form-group">
-        <label for="password">Password</label>
-        <InputText id="password" @bind-Value="@UsernameAndPassword.Password" type="password" class="form-control" />
+    <button @onclick="@(() => Navigation.NavigateTo(""))" class="btn btn-primary">Select your character!</button>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        <h2>Login failed!</h2>
+        @LoginResult.Message
     </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Login</button>
-    </div>
-    <div class="form-group">
-        <small>Don't have an account yet? Go and <a href="account/register">register an account</a>!</small>
-    </div>
-</EditForm>
+    <button @onclick="@(() => LoginResult = null)" class="btn btn-primary">Try again!</button>
+}
 
 @code {
 
@@ -38,10 +59,11 @@
     }
 
     public UsernamePasswordCombo UsernameAndPassword { get; set; } = new UsernamePasswordCombo();
+    public ServiceResult<Account> LoginResult { get; set; }
 
-    public void DoLogin()
+    public async void DoLogin()
     {
-        AccountService.Login(UsernameAndPassword.Username, UsernameAndPassword.Password);
+        LoginResult = await AccountService.LoginAsync(UsernameAndPassword.Username, UsernameAndPassword.Password);
     }
 
 }

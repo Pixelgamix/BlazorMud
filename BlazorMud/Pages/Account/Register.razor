@@ -3,31 +3,50 @@
 @using BlazorMud.Contracts.Services
 @using System.ComponentModel.DataAnnotations
 @inject IAccountService AccountService
+@inject Microsoft.AspNetCore.Components.NavigationManager Navigation
 
 <h1>Register Account</h1>
 
-<EditForm Model="@UsernameAndPassword" OnValidSubmit="@DoRegister">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="form-group">
-        <label for="username">Username</label>
-        <InputText id="username" @bind-Value="@UsernameAndPassword.Username" class="form-control" />
+@if (RegistrationResult is null) {
+    <EditForm Model="@UsernameAndPassword" OnValidSubmit="@DoRegister">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="username">Username</label>
+            <InputText id="username" @bind-Value="@UsernameAndPassword.Username" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <InputText id="password" @bind-Value="@UsernameAndPassword.Password" type="password" class="form-control" />
+        </div>
+        <div class="form-group form-check">
+            <InputCheckbox id="behaving" @bind-Value="@UsernameAndPassword.IsBehaving" class="form-check-input" />
+            <label class="form-check-label" for="behaving">I have read and accept the rules!</label>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" disabled="@(!UsernameAndPassword.IsBehaving)">Create Account</button>
+        </div>
+        <div class="form-group">
+            <small>Already have an account? Go and <a href="account/login">log into your account</a>!</small>
+        </div>
+    </EditForm>
+}
+else if(RegistrationResult.IsSuccess)
+{
+    <div class="alert alert-success" role="alert">
+        <h2>Account successfully registered!</h2>
+        @RegistrationResult.Message
     </div>
-    <div class="form-group">
-        <label for="password">Password</label>
-        <InputText id="password" @bind-Value="@UsernameAndPassword.Password" type="password" class="form-control" />
+    <button @onclick="@(() => Navigation.NavigateTo("account/login"))" class="btn btn-primary">Log in!</button>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        <h2>Registration failed!</h2>
+        @RegistrationResult.Message
     </div>
-    <div class="form-check">
-        <InputCheckbox id="behaving" @bind-Value="@UsernameAndPassword.IsBehaving" class="form-check-input" />
-        <label class="form-check-label" for="behaving">I have read and accept the rules!</label>
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary" disabled="@(!UsernameAndPassword.IsBehaving)">Create Account</button>
-    </div>
-    <div class="form-group">
-        <small>Already have an account? Go and <a href="account/login">log into your account</a>!</small>
-    </div>
-</EditForm>
+    <button @onclick="@(() => RegistrationResult = null)" class="btn btn-primary">Try again!</button>
+}
 
 @code {
 
@@ -45,10 +64,19 @@
     }
 
     public UsernamePasswordCombo UsernameAndPassword { get; set; } = new UsernamePasswordCombo();
+    public ServiceResult RegistrationResult { get; set; }
 
-    public void DoRegister()
+    public async void DoRegister()
     {
-        AccountService.Register(UsernameAndPassword.Username, UsernameAndPassword.Password);
+        RegistrationResult = await AccountService.RegisterAsync(UsernameAndPassword.Username, UsernameAndPassword.Password);
+    }
+
+    public void ResetForm()
+    {
+        UsernameAndPassword.Username = string.Empty;
+        UsernameAndPassword.Password = string.Empty;
+        UsernameAndPassword.IsBehaving = false;
+        RegistrationResult = null;
     }
 
 }
