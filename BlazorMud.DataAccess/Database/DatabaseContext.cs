@@ -6,8 +6,8 @@ namespace BlazorMud.DataAccess.Database
 {
     public sealed class DatabaseContext : IDatabaseContext
     {
-        private DbContext _DbContext;
-        private RepositoryContext _RepositoryContext;
+        private readonly DbContext _DbContext;
+        private readonly RepositoryContext _RepositoryContext;
 
         public DatabaseContext(DbContext dbContext,
             RepositoryContext repositoryContext)

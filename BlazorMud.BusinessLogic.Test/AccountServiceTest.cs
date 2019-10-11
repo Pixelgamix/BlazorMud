@@ -29,8 +29,10 @@ namespace BlazorMud.BusinessLogic.Test
                 .Callback(async (Func<IRepositoryContext, Task> f) => await f(repositoryContextMock.Object));
 
             var passwordHasherMock = new Mock<IPasswordHasher>();
+            var mapperMock = new Mock<AutoMapper.IMapper>();
+            var tokenGeneratorMock = new Mock<ITokenGenerator>();
 
-            var subject = new AccountService(loggerMock.Object, databaseContextMock.Object, passwordHasherMock.Object);
+            var subject = new AccountService(loggerMock.Object, databaseContextMock.Object, passwordHasherMock.Object, mapperMock.Object, tokenGeneratorMock.Object);
 
             var result = await subject.ExistsAsync("testuser");
 
@@ -57,8 +59,10 @@ namespace BlazorMud.BusinessLogic.Test
                 .Callback(async (Func<IRepositoryContext, Task> f) => await f(repositoryContextMock.Object));
 
             var passwordHasherMock = new Mock<IPasswordHasher>();
+            var mapperMock = new Mock<AutoMapper.IMapper>();
+            var tokenGeneratorMock = new Mock<ITokenGenerator>();
 
-            var subject = new AccountService(loggerMock.Object, databaseContextMock.Object, passwordHasherMock.Object);
+            var subject = new AccountService(loggerMock.Object, databaseContextMock.Object, passwordHasherMock.Object, mapperMock.Object, tokenGeneratorMock.Object);
 
             var result = await subject.ExistsAsync("testuser");
 
@@ -77,8 +81,10 @@ namespace BlazorMud.BusinessLogic.Test
                 .Throws(new InvalidOperationException());
 
             var passwordHasherMock = new Mock<IPasswordHasher>();
+            var mapperMock = new Mock<AutoMapper.IMapper>();
+            var tokenGeneratorMock = new Mock<ITokenGenerator>();
 
-            var subject = new AccountService(loggerMock.Object, databaseContextMock.Object, passwordHasherMock.Object);
+            var subject = new AccountService(loggerMock.Object, databaseContextMock.Object, passwordHasherMock.Object, mapperMock.Object, tokenGeneratorMock.Object);
 
             var result = await subject.ExistsAsync("testuser");
 

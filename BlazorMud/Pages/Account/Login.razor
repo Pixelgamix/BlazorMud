@@ -1,8 +1,8 @@
 ﻿@page "/account/login"
 
-@using BlazorMud.Contracts.Entities
+@using BlazorMud.Contracts.DomainModel
 @using BlazorMud.Contracts.Services
-@using System.ComponentModel.DataAnnotations
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IAccountService AccountService
 @inject Microsoft.AspNetCore.Components.NavigationManager Navigation
 
@@ -10,19 +10,38 @@
 
 @if (LoginResult is null)
 {
-    <EditForm Model="@UsernameAndPassword" OnValidSubmit="@DoLogin">
+    <EditForm Model="@AccountLogin" OnValidSubmit="@DoLogin">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="form-group">
             <label for="username">Username</label>
-            <InputText id="username" @bind-Value="@UsernameAndPassword.Username" class="form-control" />
+            <InputText id="username" @bind-Value="@AccountLogin.Username" class="form-control" />
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <InputText id="password" @bind-Value="@UsernameAndPassword.Password" type="password" class="form-control" />
+            <InputText id="password" @bind-Value="@AccountLogin.Password" type="password" class="form-control" />
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary">Login</button>
+            <label for="loginduration">Stay logged in for</label>
+            <InputSelect id="loginduration" @bind-Value="@AccountLogin.ExpireMinutesAsString">
+                @for (int duration = 60; duration <= 1440; duration += 60)
+                {
+                    <option @key="@duration" value="@duration">@(duration / 60) hours</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" disabled="@IsWorking">
+                @if (!IsWorking)
+                {
+                    <span>Login</span>
+                }
+                else
+                {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span>Loading...</span>
+                }
+            </button>
         </div>
         <div class="form-group">
             <small>Don't have an account yet? Go and <a href="account/register">register an account</a>!</small>
@@ -48,22 +67,20 @@ else
 
 @code {
 
-    public class UsernamePasswordCombo
-    {
-        [Required]
-        [StringLength(32, ErrorMessage = "Username is too long.")]
-        public string Username { get; set; }
-
-        [Required]
-        public string Password { get; set; }
-    }
-
-    public UsernamePasswordCombo UsernameAndPassword { get; set; } = new UsernamePasswordCombo();
-    public ServiceResult<Account> LoginResult { get; set; }
+    public AccountLoginModel AccountLogin { get; set; } = new AccountLoginModel();
+    public bool IsWorking { get; set; }
+    public ServiceResult<string> LoginResult { get; set; }
 
     public async void DoLogin()
     {
-        LoginResult = await AccountService.LoginAsync(UsernameAndPassword.Username, UsernameAndPassword.Password);
+        IsWorking = true;
+        LoginResult = await AccountService.LoginAsync(AccountLogin);
+        IsWorking = false;
+
+        if (LoginResult.IsSuccess)
+            await LocalStorage.SetItemAsync("token", LoginResult.Result);
+
+        await InvokeAsync(StateHasChanged);
     }
 
 }

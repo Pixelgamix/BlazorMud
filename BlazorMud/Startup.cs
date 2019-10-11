@@ -1,13 +1,17 @@
 using Autofac;
 using BlazorMud.Contracts.Database;
+using BlazorMud.Contracts.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Extensions.Logging;
+using System.Text;
 
 namespace BlazorMud
 {
@@ -29,6 +33,8 @@ namespace BlazorMud
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            ConfigureSecurity(services);
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
         }
@@ -70,8 +76,32 @@ namespace BlazorMud
             Configuration.GetSection("Database").Bind(databaseSettings);
             builder.RegisterInstance(databaseSettings).As<DatabaseSettings>();
 
+            var securitySettings = new SecuritySettings();
+            Configuration.GetSection("Security").Bind(securitySettings);
+            builder.RegisterInstance(securitySettings).As<SecuritySettings>();
+
+            builder.RegisterType<Blazored.LocalStorage.LocalStorageService>()
+                .As<Blazored.LocalStorage.ILocalStorageService>();
+
             builder.RegisterModule<BusinessLogic.AutofacModule>();
             builder.RegisterModule<DataAccess.AutofacModule>();
+        }
+
+        private void ConfigureSecurity(IServiceCollection services)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(cfg =>
+                {
+                    cfg.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = Configuration["Security:Tokens:Issuer"],
+                        ValidateAudience = true,
+                        ValidAudience = Configuration["Security:Tokens:Audience"],
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Security:Tokens:Key"]))
+                    };
+                });
         }
     }
 }

@@ -32,5 +32,12 @@ namespace BlazorMud.DataAccess.Database
 
             return Session.Query<Account>().Where(x => x.AccountName == accountName).FirstOrDefaultAsync();
         }
+
+        public Task UpdateAccountAsync(Account account)
+        {
+            if (account is null) throw new ArgumentNullException(nameof(account));
+
+            return Session.UpdateAsync(account);
+        }
     }
 }

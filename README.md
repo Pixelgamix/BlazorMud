@@ -1,11 +1,12 @@
 # BlazorMud
 An _experimental_ [MUD](https://en.wikipedia.org/wiki/MUD) made with [.NET Core 3.0](https://docs.microsoft.com/dotnet/core/) and [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor).
 
-This project is a playground for experimenting, in very early stages and extremely work in progress. Expect stuff to change a lot. There is no guarantee that this project will evolve into something useful or end up being complete.
+This project is a playground for learning and experimenting with different frameworks, in very early stages and extremely work in progress. Expect stuff to change a lot. There is no guarantee that this project will evolve into something useful or end up being complete.
 
 ## Frameworks used
 - [ASP.NET Core](https://dotnet.microsoft.com/learn/aspnet/what-is-aspnet-core)
 - [Autofac](https://autofac.org/)
+- [Automapper](https://automapper.org/)
 - Blazor
 - [Fluent NHibernate](https://github.com/FluentNHibernate/fluent-nhibernate)
 - [Moq](https://github.com/moq/moq4)
