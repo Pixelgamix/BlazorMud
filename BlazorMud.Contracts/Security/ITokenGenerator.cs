@@ -1,4 +1,6 @@
-﻿namespace BlazorMud.Contracts.Security
+﻿using BlazorMud.Contracts.Entities;
+
+namespace BlazorMud.Contracts.Security
 {
     /// <summary>
     /// Token generator functionality.
@@ -8,9 +10,9 @@
         /// <summary>
         /// Generates a token for the specified username.
         /// </summary>
-        /// <param name="username">The username.</param>
+        /// <param name="account">The <see cref="Account"/> to generate the token for.</param>
         /// <param name="expireMinutes">The duration in minutes for how long the token is valid.</param>
         /// <returns>The generated token.</returns>
-        string Generate(string username, int expireMinutes);
+        string Generate(Account account, int expireMinutes);
     }
 }

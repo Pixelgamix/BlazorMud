@@ -26,11 +26,29 @@ namespace BlazorMud.BusinessLogic.Services
             _TokenGenerator = tokenGenerator ?? throw new ArgumentNullException(nameof(tokenGenerator));
         }
 
+        public async Task<ServiceResult<bool>> ExistsAsync(string username)
+        {
+            if (username is null) throw new ArgumentNullException(nameof(username));
+
+            try
+            {
+                var exists = false;
+                await _DatabaseContext.ExecuteAsync(async u => exists = await u.AccountRepository.ExistsAsync(username));
+                return new ServiceResult<bool>(true, result: exists);
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError(ex, "Unexpected error trying to check if username {0} exists", username);
+                return new ServiceResult<bool>(false, "Server error. Try again later.");
+            }
+        }
+
         public async Task<ServiceResult<string>> LoginAsync(AccountLoginModel accountLogin)
         {
             if (accountLogin is null) throw new ArgumentNullException(nameof(accountLogin));
 
             Account account = null;
+            string token = null;
             var isValidLogin = false;
 
             try
@@ -43,6 +61,7 @@ namespace BlazorMud.BusinessLogic.Services
                     {
                         account.LastLogin = DateTime.UtcNow;
                         await u.AccountRepository.UpdateAccountAsync(account);
+                        token = _TokenGenerator.Generate(account, accountLogin.ExpireMinutes);
                     }
                 });
 
@@ -51,8 +70,6 @@ namespace BlazorMud.BusinessLogic.Services
                     _Logger.LogDebug("Wrong login or password for {0}", accountLogin.Username);
                     return new ServiceResult<string>(false, "Wrong login or password.");
                 }
-
-                var token = _TokenGenerator.Generate(account.AccountName, accountLogin.ExpireMinutes);
 
                 _Logger.LogDebug("{0} successfully logged in", accountLogin.Username);
                 return new ServiceResult<string>(true, result: token);
@@ -94,23 +111,6 @@ namespace BlazorMud.BusinessLogic.Services
             {
                 _Logger.LogError(ex, "Unexpected error during account registration for {0}", accountRegistration.AccountName);
                 return new ServiceResult(false, "Server error. Try again later.");
-            }
-        }
-
-        public async Task<ServiceResult<bool>> ExistsAsync(string username)
-        {
-            if (username is null) throw new ArgumentNullException(nameof(username));
-
-            try
-            {
-                var exists = false;
-                await _DatabaseContext.ExecuteAsync(async u => exists = await u.AccountRepository.ExistsAsync(username));
-                return new ServiceResult<bool>(true, result: exists);
-            }
-            catch (Exception ex)
-            {
-                _Logger.LogError(ex, "Unexpected error trying to check if username {0} exists", username);
-                return new ServiceResult<bool>(false, "Server error. Try again later.");
             }
         }
     }

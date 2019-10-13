@@ -1,4 +1,5 @@
-﻿using BlazorMud.Contracts.Security;
+﻿using BlazorMud.Contracts.Entities;
+using BlazorMud.Contracts.Security;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,11 +16,11 @@ namespace BlazorMud.BusinessLogic.Security
             this._SecuritySettings = securitySettings ?? throw new ArgumentNullException(nameof(securitySettings));
         }
 
-        public string Generate(string username, int expireMinutes)
+        public string Generate(Account account, int expireMinutes)
         {
             // Implementation based on https://stackoverflow.com/a/40284152
 
-            if (username is null) throw new ArgumentNullException(nameof(username));
+            if (account is null) throw new ArgumentNullException(nameof(account));
 
             var symmetricKey = Convert.FromBase64String(_SecuritySettings.Tokens.Key);
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -36,7 +37,8 @@ namespace BlazorMud.BusinessLogic.Security
                     SecurityAlgorithms.HmacSha256Signature),
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, username)
+                    new Claim(ClaimTypes.Name, account.AccountName),
+                    new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString("N"))
                 })
             };
 
