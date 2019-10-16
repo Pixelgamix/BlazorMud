@@ -7,11 +7,11 @@ using System.Security.Claims;
 
 namespace BlazorMud.BusinessLogic.Security
 {
-    public sealed class TokenGenerator : ITokenGenerator
+    public sealed class TokenManager : ITokenManager
     {
         private readonly SecuritySettings _SecuritySettings;
 
-        public TokenGenerator(SecuritySettings securitySettings)
+        public TokenManager(SecuritySettings securitySettings)
         {
             this._SecuritySettings = securitySettings ?? throw new ArgumentNullException(nameof(securitySettings));
         }
@@ -46,6 +46,35 @@ namespace BlazorMud.BusinessLogic.Security
             var token = tokenHandler.WriteToken(stoken);
 
             return token;
+        }
+
+        public bool Validate(string token)
+        {
+            var symmetricKey = Convert.FromBase64String(_SecuritySettings.Tokens.Key);
+
+            var validationParameters = new TokenValidationParameters()
+            {
+                IssuerSigningKey = new SymmetricSecurityKey(symmetricKey),
+                ValidAudience = _SecuritySettings.Tokens.Audience,
+                ValidIssuer = _SecuritySettings.Tokens.Issuer,
+                ValidateLifetime = true,
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidateIssuerSigningKey = true
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken validatedToken = null;
+            try
+            {
+                tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
+            }
+            catch (SecurityTokenException)
+            {
+                return false;
+            }
+
+            return validatedToken != null;
         }
     }
 }

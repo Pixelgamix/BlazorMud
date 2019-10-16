@@ -1,0 +1,21 @@
+﻿@page "/account/logout"
+
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject Microsoft.AspNetCore.Components.NavigationManager Navigation
+
+<h3>Logout</h3>
+<p>
+    See you!
+</p>
+
+@code {
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LocalStorage.SetItemAsync("token", " ");
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}

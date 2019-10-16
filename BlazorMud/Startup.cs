@@ -3,6 +3,7 @@ using BlazorMud.Contracts.Database;
 using BlazorMud.Contracts.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -81,7 +82,12 @@ namespace BlazorMud
             builder.RegisterInstance(securitySettings).As<SecuritySettings>();
 
             builder.RegisterType<Blazored.LocalStorage.LocalStorageService>()
-                .As<Blazored.LocalStorage.ILocalStorageService>();
+                .As<Blazored.LocalStorage.ILocalStorageService>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<JwtAuthStateProvider>()
+                .As<AuthenticationStateProvider>()
+                .InstancePerLifetimeScope();
 
             builder.RegisterModule<BusinessLogic.AutofacModule>();
             builder.RegisterModule<DataAccess.AutofacModule>();

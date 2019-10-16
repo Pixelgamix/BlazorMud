@@ -15,9 +15,9 @@ namespace BlazorMud.BusinessLogic.Services
         private readonly IDatabaseContext _DatabaseContext;
         private readonly IPasswordHasher _PasswordHasher;
         private readonly AutoMapper.IMapper _Mapper;
-        private readonly ITokenGenerator _TokenGenerator;
+        private readonly ITokenManager _TokenGenerator;
 
-        public AccountService(ILogger<AccountService> logger, IDatabaseContext databaseContext, IPasswordHasher passwordHasher, AutoMapper.IMapper mapper, ITokenGenerator tokenGenerator)
+        public AccountService(ILogger<AccountService> logger, IDatabaseContext databaseContext, IPasswordHasher passwordHasher, AutoMapper.IMapper mapper, ITokenManager tokenGenerator)
         {
             _Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _DatabaseContext = databaseContext ?? throw new ArgumentNullException(nameof(databaseContext));

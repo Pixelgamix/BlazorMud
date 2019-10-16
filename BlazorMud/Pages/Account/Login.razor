@@ -78,7 +78,9 @@ else
         IsWorking = false;
 
         if (LoginResult.IsSuccess)
+        {
             await LocalStorage.SetItemAsync("token", LoginResult.Result);
+        }
 
         await InvokeAsync(StateHasChanged);
     }

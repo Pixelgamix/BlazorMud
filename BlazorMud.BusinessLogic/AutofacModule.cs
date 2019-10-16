@@ -16,8 +16,8 @@ namespace BlazorMud.BusinessLogic
                 .As<IPasswordHasher>()
                 .SingleInstance();
 
-            builder.RegisterType<TokenGenerator>()
-                .As<ITokenGenerator>()
+            builder.RegisterType<TokenManager>()
+                .As<ITokenManager>()
                 .SingleInstance();
 
             ConfigureServices(builder);

@@ -30,7 +30,7 @@ namespace BlazorMud.BusinessLogic.Test
 
             var passwordHasherMock = new Mock<IPasswordHasher>();
             var mapperMock = new Mock<AutoMapper.IMapper>();
-            var tokenGeneratorMock = new Mock<ITokenGenerator>();
+            var tokenGeneratorMock = new Mock<ITokenManager>();
 
             var subject = new AccountService(loggerMock.Object, databaseContextMock.Object, passwordHasherMock.Object, mapperMock.Object, tokenGeneratorMock.Object);
 
@@ -60,7 +60,7 @@ namespace BlazorMud.BusinessLogic.Test
 
             var passwordHasherMock = new Mock<IPasswordHasher>();
             var mapperMock = new Mock<AutoMapper.IMapper>();
-            var tokenGeneratorMock = new Mock<ITokenGenerator>();
+            var tokenGeneratorMock = new Mock<ITokenManager>();
 
             var subject = new AccountService(loggerMock.Object, databaseContextMock.Object, passwordHasherMock.Object, mapperMock.Object, tokenGeneratorMock.Object);
 
@@ -82,7 +82,7 @@ namespace BlazorMud.BusinessLogic.Test
 
             var passwordHasherMock = new Mock<IPasswordHasher>();
             var mapperMock = new Mock<AutoMapper.IMapper>();
-            var tokenGeneratorMock = new Mock<ITokenGenerator>();
+            var tokenGeneratorMock = new Mock<ITokenManager>();
 
             var subject = new AccountService(loggerMock.Object, databaseContextMock.Object, passwordHasherMock.Object, mapperMock.Object, tokenGeneratorMock.Object);
 
