@@ -17,7 +17,8 @@ namespace BlazorMud.BusinessLogic.Mappings
                 .ForMember(dst => dst.AccountId, opt => opt.Ignore())
                 .ForMember(dst => dst.HashedPassword, opt => opt.MapFrom(src => passwordHasher.CreateHashedPassword(src.Password)))
                 .ForMember(dst => dst.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
-                .ForMember(dst => dst.LastLogin, opt => opt.Ignore());
+                .ForMember(dst => dst.LastLogin, opt => opt.Ignore())
+                .ForMember(dst => dst.Characters, opt => opt.Ignore());
         }
     }
 }
