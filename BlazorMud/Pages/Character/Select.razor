@@ -1,0 +1,57 @@
+@page "/character/select"
+@attribute [Authorize]
+
+@using System.Security.Claims
+@using BlazorMud.Contracts.DomainModel
+@using BlazorMud.Contracts.Services
+@inject ICharacterService CharacterService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h1>Select your Character</h1>
+@if (Characters != null)
+{
+    @if (Characters.IsSuccess)
+    {
+        <table>
+            <thead>
+            <tr>
+                <th>Forename</th>
+                <th>Surname</th>
+            </tr>
+            </thead>
+            <tbody>
+                @foreach (var character in Characters.Result)
+                {
+                    <tr>
+                        <td>@character.Forename</td>
+                        <td>@character.Surname</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            <h2>Failed to list characters!</h2>
+            @Characters.Message
+        </div>
+    }
+}
+
+@code
+{
+    public ServiceResult<CharacterInfoModel[]> Characters { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var accountId = new Guid(authState.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        Characters = await CharacterService.ListCharacters(accountId);
+        InvokeAsync(StateHasChanged);
+    }
+
+}

@@ -1,11 +1,12 @@
-﻿using BlazorMud.Contracts.Database;
+﻿using System;
+using System.Threading.Tasks;
+using AutoMapper;
+using BlazorMud.Contracts.Database;
 using BlazorMud.Contracts.DomainModel;
 using BlazorMud.Contracts.Entities;
 using BlazorMud.Contracts.Security;
 using BlazorMud.Contracts.Services;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
 
 namespace BlazorMud.BusinessLogic.Services
 {
@@ -14,10 +15,10 @@ namespace BlazorMud.BusinessLogic.Services
         private readonly ILogger<AccountService> _Logger;
         private readonly IDatabaseContext _DatabaseContext;
         private readonly IPasswordHasher _PasswordHasher;
-        private readonly AutoMapper.IMapper _Mapper;
+        private readonly IMapper _Mapper;
         private readonly ITokenManager _TokenGenerator;
 
-        public AccountService(ILogger<AccountService> logger, IDatabaseContext databaseContext, IPasswordHasher passwordHasher, AutoMapper.IMapper mapper, ITokenManager tokenGenerator)
+        public AccountService(ILogger<AccountService> logger, IDatabaseContext databaseContext, IPasswordHasher passwordHasher, IMapper mapper, ITokenManager tokenGenerator)
         {
             _Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _DatabaseContext = databaseContext ?? throw new ArgumentNullException(nameof(databaseContext));

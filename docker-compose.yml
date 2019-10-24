@@ -6,7 +6,6 @@ services:
     image: postgres:11
     volumes:
       - db-data:/var/lib/postgresql/data
-    restart: always
     ports:
       - 5432:5432 
     environment:
@@ -17,7 +16,6 @@ services:
     depends_on:
       - db
     image: adminer:4.7.3
-    restart: always
     ports:
       - 8080:8080
 
@@ -25,7 +23,6 @@ services:
     depends_on:
       - db
     image: blazormud
-    restart: always
     ports:
       - 8000:80
 

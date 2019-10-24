@@ -32,11 +32,17 @@ namespace BlazorMud.BusinessLogic
         {
             builder.RegisterType<AccountService>()
                 .As<IAccountService>();
+
+            builder.RegisterType<CharacterService>()
+                .As<ICharacterService>();
         }
 
         private static void ConfigureAutomapper(ContainerBuilder builder)
         {
             builder.RegisterType<AccountMappingProfile>()
+                .As<AutoMapper.Profile>();
+
+            builder.RegisterType<CharacterMappingProfile>()
                 .As<AutoMapper.Profile>();
         }
 

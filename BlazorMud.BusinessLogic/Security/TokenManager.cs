@@ -48,7 +48,7 @@ namespace BlazorMud.BusinessLogic.Security
             return token;
         }
 
-        public bool Validate(string token)
+        public ClaimsPrincipal Validate(string token, out SecurityToken validatedToken)
         {
             var symmetricKey = Convert.FromBase64String(_SecuritySettings.Tokens.Key);
 
@@ -64,17 +64,15 @@ namespace BlazorMud.BusinessLogic.Security
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken validatedToken = null;
             try
             {
-                tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
+                return tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
             }
             catch (SecurityTokenException)
             {
-                return false;
+                validatedToken = null;
+                return null;
             }
-
-            return validatedToken != null;
         }
     }
 }

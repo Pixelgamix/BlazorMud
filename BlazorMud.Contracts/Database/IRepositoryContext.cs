@@ -9,5 +9,10 @@
         /// Account repository.
         /// </summary>
         IAccountRepository AccountRepository { get; }
+        
+        /// <summary>
+        /// Character repository.
+        /// </summary>
+        ICharacterRepository CharacterRepository { get; }
     }
 }

@@ -5,7 +5,7 @@ using System;
 
 namespace BlazorMud.BusinessLogic.Mappings
 {
-    public class AccountMappingProfile : AutoMapper.Profile
+    public sealed class AccountMappingProfile : AutoMapper.Profile
     {
         private readonly IPasswordHasher _PasswordHasher;
 

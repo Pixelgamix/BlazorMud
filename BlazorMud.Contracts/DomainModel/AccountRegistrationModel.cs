@@ -10,6 +10,7 @@ namespace BlazorMud.Contracts.DomainModel
         [Required]
         [MinLength(4, ErrorMessage = "Username is too short (min. 4 letters).")]
         [MaxLength(32, ErrorMessage = "Username is too long (max. 32 letters).")]
+        [RegularExpression("[a-zA-Z]", ErrorMessage = "Username may contain letters only.")]
         public string AccountName { get; set; }
 
         [Required]

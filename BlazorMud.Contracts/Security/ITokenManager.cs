@@ -1,4 +1,6 @@
-﻿using BlazorMud.Contracts.Entities;
+﻿using System.Security.Claims;
+using BlazorMud.Contracts.Entities;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BlazorMud.Contracts.Security
 {
@@ -16,10 +18,11 @@ namespace BlazorMud.Contracts.Security
         string Generate(Account account, int expireMinutes);
 
         /// <summary>
-        /// Validates the specified token.
+        /// Validates the specified token and returns a principal with the token's data.
         /// </summary>
         /// <param name="token">The token that should be validated.</param>
-        /// <returns><c>true</c> if the token is valid, otherwise <c>false</c>.</returns>
-        bool Validate(string token);
+        /// <param name="validatedToken">The validated token or <c>null</c> if validation failed.</param>
+        /// <returns>The principal or <c>null</c>.</returns>
+        ClaimsPrincipal Validate(string token, out SecurityToken validatedToken);
     }
 }

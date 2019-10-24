@@ -14,6 +14,9 @@ namespace BlazorMud.DataAccess
 
             builder.RegisterType<AccountRepository>()
                 .AsSelf();
+
+            builder.RegisterType<CharacterRepository>()
+                .AsSelf();
             
             builder.RegisterType<DatabaseContext>()
                 .As<IDatabaseContext>();

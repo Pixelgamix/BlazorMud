@@ -13,6 +13,7 @@ namespace BlazorMud.DataAccess.Mappings
             Map(x => x.HashedPassword, "hashed_password").Length(48).Not.Nullable();
             Map(x => x.CreatedAt, "created_at").Not.Nullable();
             Map(x => x.LastLogin, "last_login").Nullable();
+            HasMany(x => x.Characters).AsSet().Inverse().Cascade.DeleteOrphan();
         }
     }
 }

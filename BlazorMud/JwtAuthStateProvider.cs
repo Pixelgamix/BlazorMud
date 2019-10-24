@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BlazorMud
 {
@@ -53,17 +54,13 @@ namespace BlazorMud
             try
             {
                 var tokenString = await _LocalStorageService.GetItemAsync<string>("token");
-                if (string.IsNullOrWhiteSpace(tokenString)
-                    || !tokenString.Contains(".")
-                    || !_TokenManager.Validate(tokenString))
+                
+                if (string.IsNullOrWhiteSpace(tokenString) || !tokenString.Contains("."))
                     return AnonymousState;
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var token = tokenHandler.ReadJwtToken(tokenString);
-
-                var identity = new ClaimsIdentity(token.Claims, "JWT");
-                var user = new ClaimsPrincipal(identity);
-                return new AuthenticationState(user);
+                
+                var principal = _TokenManager.Validate(tokenString, out _);
+                
+                return principal is null ? AnonymousState : new AuthenticationState(principal);
             }
             catch(Exception ex)
             {

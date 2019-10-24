@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BlazorMud.Contracts.Entities
 {
@@ -9,5 +10,6 @@ namespace BlazorMud.Contracts.Entities
         public virtual string HashedPassword { get; set; }
         public virtual DateTime CreatedAt { get; set; }
         public virtual DateTime? LastLogin { get; set; }
+        public virtual ISet<PlayerCharacter> Characters { get; set; }
     }
 }
