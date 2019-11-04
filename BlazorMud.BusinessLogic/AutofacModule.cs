@@ -35,6 +35,10 @@ namespace BlazorMud.BusinessLogic
 
             builder.RegisterType<CharacterService>()
                 .As<ICharacterService>();
+            
+            builder.RegisterType<MudSessionService>()
+                .As<IMudSessionService>()
+                .SingleInstance();
         }
 
         private static void ConfigureAutomapper(ContainerBuilder builder)

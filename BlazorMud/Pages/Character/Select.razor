@@ -4,19 +4,36 @@
 @using System.Security.Claims
 @using BlazorMud.Contracts.DomainModel
 @using BlazorMud.Contracts.Services
+@inject MudSessionModel SessionModel
 @inject ICharacterService CharacterService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
 
 <h1>Select your Character</h1>
 @if (Characters != null)
 {
-    @if (Characters.IsSuccess)
+    @if (!Characters.IsSuccess)
     {
-        <table>
+        <div class="alert alert-danger" role="alert">
+            <h2>Failed to list characters!</h2>
+            @Characters.Message
+        </div>
+    }
+    else if (Characters.Result.Length == 0)
+    {
+        <div class="alert alert-info" role="alert">
+            <h2>You have no characters!</h2>
+        </div>
+        <button @onclick="@(() => Navigation.NavigateTo("character/create"))" class="btn btn-primary">Create a character!</button>    
+    }
+    else
+    {
+        <table class="table">
             <thead>
             <tr>
-                <th>Forename</th>
-                <th>Surname</th>
+                <th scope="col">Forename</th>
+                <th scope="col">Surname</th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
@@ -25,23 +42,20 @@
                     <tr>
                         <td>@character.Forename</td>
                         <td>@character.Surname</td>
+                        <td>
+                            <button @onclick="@(() => DoSelectCharacter(character))" class="btn btn-primary">Select</button>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
-    }
-    else
-    {
-        <div class="alert alert-danger" role="alert">
-            <h2>Failed to list characters!</h2>
-            @Characters.Message
-        </div>
+        <button @onclick="@(() => Navigation.NavigateTo("character/create"))" class="btn btn-primary">Create a character!</button>
     }
 }
 
 @code
 {
-    public ServiceResult<CharacterInfoModel[]> Characters { get; set; }
+    private ServiceResult<CharacterInfoModel[]> Characters { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -50,8 +64,13 @@
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var accountId = new Guid(authState.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-        Characters = await CharacterService.ListCharacters(accountId);
-        InvokeAsync(StateHasChanged);
+        Characters = await CharacterService.ListCharactersAsync(accountId);
+        await InvokeAsync(StateHasChanged);
     }
 
+    private void DoSelectCharacter(CharacterInfoModel selectedCharacter)
+    {
+        SessionModel.Character = selectedCharacter;
+        Navigation.NavigateTo("");
+    }
 }

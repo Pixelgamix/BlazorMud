@@ -4,7 +4,7 @@
 @using BlazorMud.Contracts.Services
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IAccountService AccountService
-@inject Microsoft.AspNetCore.Components.NavigationManager Navigation
+@inject NavigationManager Navigation
 
 <h1>Login</h1>
 
@@ -14,24 +14,14 @@
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="form-group">
-            <label for="username">Username</label>
-            <InputText id="username" @bind-Value="@AccountLogin.Username" class="form-control" />
+            <InputText id="username" placeholder="Username" @bind-Value="@AccountLogin.Username" class="form-control" />
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
-            <InputText id="password" @bind-Value="@AccountLogin.Password" type="password" class="form-control" />
+            <InputText id="password" placeholder="Password" @bind-Value="@AccountLogin.Password" type="password" class="form-control" />
         </div>
         <div class="form-group">
-            <label for="loginduration">Stay logged in for</label>
-            <InputSelect id="loginduration" @bind-Value="@AccountLogin.ExpireMinutesAsString">
-                @for (int duration = 60; duration <= 1440; duration += 60)
-                {
-                    <option @key="@duration" value="@duration">@(duration / 60) hours</option>
-                }
-            </InputSelect>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary" disabled="@IsWorking">
+            <div class="form-inline">
+                <button type="submit" class="btn btn-primary form-control col-sm-5 my-1 mr-2" disabled="@IsWorking">
                 @if (!IsWorking)
                 {
                     <span>Login</span>
@@ -41,22 +31,22 @@
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     <span>Loading...</span>
                 }
-            </button>
+                </button>
+                <label for="loginduration" class="my-1 mr-2">Stay logged in for</label>
+                <InputSelect id="loginduration" @bind-Value="@AccountLogin.ExpireMinutesAsString" class="form-control my-1 mr-2">
+                    @for (int duration = 60; duration <= 1440; duration += 276)
+                    {
+                        <option @key="@duration" value="@duration">@(duration / 60) hours</option>
+                    }
+                </InputSelect>
+            </div>
         </div>
         <div class="form-group">
             <small>Don't have an account yet? Go and <a href="account/register">register an account</a>!</small>
         </div>
     </EditForm>
 }
-else if (LoginResult.IsSuccess)
-{
-    <div class="alert alert-success" role="alert">
-        <h2>Your are now logged in!</h2>
-        @LoginResult.Message
-    </div>
-    <button @onclick="@(() => Navigation.NavigateTo(""))" class="btn btn-primary">Select your character!</button>
-}
-else
+else if (!LoginResult.IsSuccess)
 {
     <div class="alert alert-danger" role="alert">
         <h2>Login failed!</h2>
@@ -67,11 +57,22 @@ else
 
 @code {
 
-    public AccountLoginModel AccountLogin { get; set; } = new AccountLoginModel();
-    public bool IsWorking { get; set; }
-    public ServiceResult<string> LoginResult { get; set; }
+    [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    private AccountLoginModel AccountLogin { get; } = new AccountLoginModel();
+    private bool IsWorking { get; set; }
+    private ServiceResult<string> LoginResult { get; set; }
 
-    public async void DoLogin()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Redirect to character selection if user is already logged in
+        var authState = await AuthenticationStateTask;
+        if (firstRender && authState.User.Identity.IsAuthenticated)
+        {
+            Navigation.NavigateTo("character/select");
+        }
+    }
+
+    private async void DoLogin()
     {
         IsWorking = true;
         LoginResult = await AccountService.LoginAsync(AccountLogin);
@@ -81,8 +82,6 @@ else
         {
             await LocalStorage.SetItemAsync("token", LoginResult.Result);
         }
-
-        await InvokeAsync(StateHasChanged);
     }
 
 }

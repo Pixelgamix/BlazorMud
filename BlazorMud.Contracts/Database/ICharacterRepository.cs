@@ -12,6 +12,13 @@ namespace BlazorMud.Contracts.Database
         /// </summary>
         /// <param name="playerCharacter">The player character that should be added.</param>
         Task AddNewCharacterAsync(PlayerCharacter playerCharacter);
+
+        /// <summary>
+        /// Returns the character with the specified id.
+        /// </summary>
+        /// <param name="characterId">The character's id.</param>
+        /// <returns>The character.</returns>
+        Task<PlayerCharacter> FetchCharacterById(Guid characterId);
         
         /// <summary>
         /// Returns all characters that belong to the account with the specified id. 

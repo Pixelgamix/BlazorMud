@@ -26,6 +26,11 @@ namespace BlazorMud.DataAccess.Database
             return Session.Query<Account>().Where(x => x.AccountName == accountName).AnyAsync();
         }
 
+        public Task<Account> GetAccountByIdAsync(Guid accountId)
+        {
+            return Session.GetAsync<Account>(accountId);
+        }
+
         public Task<Account> GetAccountByNameAsync(string accountName)
         {
             if (accountName is null) throw new ArgumentNullException(nameof(accountName));

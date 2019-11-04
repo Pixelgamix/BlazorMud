@@ -13,16 +13,13 @@
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="form-group">
-            <label for="username">Username</label>
-            <InputText id="username" @bind-Value="@AccountRegistration.AccountName" class="form-control" />
+            <InputText id="username" placeholder="Username" @bind-Value="@AccountRegistration.AccountName" class="form-control" />
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
-            <InputText id="password" @bind-Value="@AccountRegistration.Password" type="password" class="form-control" />
+            <InputText id="password" placeholder="Password" @bind-Value="@AccountRegistration.Password" type="password" class="form-control" />
         </div>
         <div class="form-group">
-            <label for="password">Confirm Password</label>
-            <InputText id="password" @bind-Value="@AccountRegistration.PasswordRepeat" type="password" class="form-control" />
+            <InputText id="password" placeholder="Confirm Password" @bind-Value="@AccountRegistration.PasswordRepeat" type="password" class="form-control" />
         </div>
         <div class="form-group form-check">
             <InputCheckbox id="behaving" @bind-Value="@AccountRegistration.HasReadAndAcceptedRules" class="form-check-input" />

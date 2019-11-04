@@ -7,11 +7,9 @@ namespace BlazorMud.BusinessLogic.Mappings
 {
     public sealed class AccountMappingProfile : AutoMapper.Profile
     {
-        private readonly IPasswordHasher _PasswordHasher;
-
         public AccountMappingProfile(IPasswordHasher passwordHasher)
         {
-            _PasswordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
+            if (passwordHasher is null) throw new ArgumentNullException(nameof(passwordHasher));
 
             CreateMap<AccountRegistrationModel, Account>()
                 .ForMember(dst => dst.AccountId, opt => opt.Ignore())
@@ -19,6 +17,8 @@ namespace BlazorMud.BusinessLogic.Mappings
                 .ForMember(dst => dst.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
                 .ForMember(dst => dst.LastLogin, opt => opt.Ignore())
                 .ForMember(dst => dst.Characters, opt => opt.Ignore());
+
+            CreateMap<Account, AccountInfoModel>();
         }
     }
 }

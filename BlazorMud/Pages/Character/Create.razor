@@ -1,0 +1,71 @@
+@page "/character/create"
+@attribute [Authorize]
+
+@using BlazorMud.Contracts.DomainModel
+@using BlazorMud.Contracts.Services
+@inject ICharacterService CharacterService
+@inject NavigationManager Navigation
+
+<h1>Create A Character</h1>
+
+@if (CreationResult is null)
+{
+    <EditForm Model="@CreationModel" OnValidSubmit="@DoLogin">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="forename">Forename</label>
+            <InputText id="forename" @bind-Value="@CreationModel.Forename" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="surname">Surname</label>
+            <InputText id="surname" @bind-Value="@CreationModel.Surname" class="form-control" />
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" disabled="@IsWorking">
+                @if (!IsWorking)
+                {
+                    <span>Create</span>
+                }
+                else
+                {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span>Loading...</span>
+                }
+            </button>
+        </div>
+    </EditForm>
+}
+else if (CreationResult.IsSuccess)
+{
+    <div class="alert alert-success" role="alert">
+        <h2>Character created!</h2>
+    </div>
+    <button @onclick="@(() => Navigation.NavigateTo("character/select"))" class="btn btn-primary">Select your character!</button>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        <h2>Character creation failed!</h2>
+        @CreationResult.Message
+    </div>
+    <button @onclick="@(() => CreationResult = null)" class="btn btn-primary">Try again!</button>
+}
+
+@code {
+
+    public CharacterCreationModel CreationModel  { get; } = new CharacterCreationModel();
+    public bool IsWorking { get; set; }
+    public ServiceResult CreationResult { get; set; }
+
+    public async void DoLogin()
+    {
+        IsWorking = true;
+        CreationResult = await CharacterService.CreateCharacterAsync(CreationModel);
+        IsWorking = false;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}
+

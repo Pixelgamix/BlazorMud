@@ -15,7 +15,7 @@
         if (firstRender)
         {
             await LocalStorage.SetItemAsync("token", " ");
-            await InvokeAsync(StateHasChanged);
+            Navigation.NavigateTo("account/login");
         }
     }
 }

@@ -1,4 +1,9 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@using System.ComponentModel
+@using BlazorMud.Contracts.DomainModel
+@inject MudSessionModel SessionModel
+@implements IDisposable
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">BlazorMud</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -9,14 +14,17 @@
     <ul class="nav flex-column">
         <AuthorizeView>
             <Authorized>
-                <li class="nav-item px-6">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                        <span class="oi oi-home" aria-hidden="true"></span> Home
-                    </NavLink>
-                </li>
+                @if (SessionModel.Character is null)
+                {
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link" href="character/select" Match="NavLinkMatch.All">
+                            <span class="oi oi-account-login" aria-hidden="true"></span> Select Character
+                        </NavLink>
+                    </li>
+                }
                 <li class="nav-item px-6">
                     <NavLink class="nav-link" href="account/logout" Match="NavLinkMatch.All">
-                        <span class="oi oi-account-login" aria-hidden="true"></span> Logout (@context.User.Identity.Name)
+                        <span class="oi oi-account-login" aria-hidden="true"></span> Logout (@SessionModel.Account.AccountName)
                     </NavLink>
                 </li>
             </Authorized>
@@ -44,4 +52,21 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        SessionModel.PropertyChanged += OnSessionModelPropertyChanged;
+    }
+
+    private void OnSessionModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        SessionModel.PropertyChanged -= OnSessionModelPropertyChanged;
+    }
+
 }

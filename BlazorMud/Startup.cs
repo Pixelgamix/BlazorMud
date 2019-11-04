@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Extensions.Logging;
 using System.Text;
+using BlazorMud.Contracts.DomainModel;
 
 namespace BlazorMud
 {
@@ -87,6 +88,10 @@ namespace BlazorMud
 
             builder.RegisterType<JwtAuthStateProvider>()
                 .As<AuthenticationStateProvider>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<MudSessionModel>()
+                .As<MudSessionModel>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterModule<BusinessLogic.AutofacModule>();

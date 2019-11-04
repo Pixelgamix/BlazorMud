@@ -20,6 +20,11 @@ namespace BlazorMud.DataAccess.Database
             return Session.SaveAsync(playerCharacter);
         }
 
+        public Task<PlayerCharacter> FetchCharacterById(Guid characterId)
+        {
+            return Session.GetAsync<PlayerCharacter>(characterId);
+        }
+
         public Task<List<PlayerCharacter>> ListCharactersByAccountIdAsync(Guid accountId)
         {
             return Session.Query<PlayerCharacter>().Where(x => x.Account.AccountId == accountId).ToListAsync();

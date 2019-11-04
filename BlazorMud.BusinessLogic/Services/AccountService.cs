@@ -18,7 +18,8 @@ namespace BlazorMud.BusinessLogic.Services
         private readonly IMapper _Mapper;
         private readonly ITokenManager _TokenGenerator;
 
-        public AccountService(ILogger<AccountService> logger, IDatabaseContext databaseContext, IPasswordHasher passwordHasher, IMapper mapper, ITokenManager tokenGenerator)
+        public AccountService(ILogger<AccountService> logger, IDatabaseContext databaseContext,
+            IPasswordHasher passwordHasher, IMapper mapper, ITokenManager tokenGenerator)
         {
             _Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _DatabaseContext = databaseContext ?? throw new ArgumentNullException(nameof(databaseContext));
@@ -34,13 +35,33 @@ namespace BlazorMud.BusinessLogic.Services
             try
             {
                 var exists = false;
-                await _DatabaseContext.ExecuteAsync(async u => exists = await u.AccountRepository.ExistsAsync(username));
+                await _DatabaseContext.ExecuteAsync(async u =>
+                    exists = await u.AccountRepository.ExistsAsync(username));
                 return new ServiceResult<bool>(true, result: exists);
             }
             catch (Exception ex)
             {
                 _Logger.LogError(ex, "Unexpected error trying to check if username {0} exists", username);
                 return new ServiceResult<bool>(false, "Server error. Try again later.");
+            }
+        }
+
+        public async Task<ServiceResult<AccountInfoModel>> FetchAccountById(Guid accountId)
+        {
+            try
+            {
+                Account account = null;
+                await _DatabaseContext.ExecuteAsync(async u =>
+                    account = await u.AccountRepository.GetAccountByIdAsync(accountId));
+
+                var accountInfo = account != null ? _Mapper.Map<AccountInfoModel>(account) : null;
+                
+                return new ServiceResult<AccountInfoModel>(true, result: accountInfo);
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError(ex, "Unexpected error trying to fetch account with id {0}", accountId);
+                return new ServiceResult<AccountInfoModel>(false, "Server error. Try again later.");
             }
         }
 
@@ -57,7 +78,8 @@ namespace BlazorMud.BusinessLogic.Services
                 await _DatabaseContext.ExecuteAsync(async u =>
                 {
                     account = await u.AccountRepository.GetAccountByNameAsync(accountLogin.Username);
-                    isValidLogin = account != null && _PasswordHasher.IsSamePassword(accountLogin.Password, account.HashedPassword);
+                    isValidLogin = account != null &&
+                                   _PasswordHasher.IsSamePassword(accountLogin.Password, account.HashedPassword);
                     if (isValidLogin)
                     {
                         account.LastLogin = DateTime.UtcNow;
@@ -92,7 +114,8 @@ namespace BlazorMud.BusinessLogic.Services
             try
             {
                 var alreadyExists = false;
-                await _DatabaseContext.ExecuteAsync(async u => {
+                await _DatabaseContext.ExecuteAsync(async u =>
+                {
                     if (await u.AccountRepository.ExistsAsync(account.AccountName))
                         alreadyExists = true;
                     else
@@ -101,7 +124,8 @@ namespace BlazorMud.BusinessLogic.Services
 
                 if (alreadyExists)
                 {
-                    _Logger.LogDebug("Registration of {0} failed as the account already exits", accountRegistration.AccountName);
+                    _Logger.LogDebug("Registration of {0} failed as the account already exits",
+                        accountRegistration.AccountName);
                     return new ServiceResult(false, "Account already exists.");
                 }
 
@@ -110,7 +134,8 @@ namespace BlazorMud.BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                _Logger.LogError(ex, "Unexpected error during account registration for {0}", accountRegistration.AccountName);
+                _Logger.LogError(ex, "Unexpected error during account registration for {0}",
+                    accountRegistration.AccountName);
                 return new ServiceResult(false, "Server error. Try again later.");
             }
         }

@@ -1,4 +1,5 @@
-﻿using BlazorMud.Contracts.DomainModel;
+﻿using System;
+using BlazorMud.Contracts.DomainModel;
 using BlazorMud.Contracts.Entities;
 using System.Threading.Tasks;
 
@@ -16,6 +17,13 @@ namespace BlazorMud.Contracts.Services
         /// <returns><c>true</c> if the username is registered, otherwise <c>false</c>.</returns>
         Task<ServiceResult<bool>> ExistsAsync(string username);
 
+        /// <summary>
+        /// Returns <see cref="AccountInfoModel"/> for the specified account id.
+        /// </summary>
+        /// <param name="accountId">The account's id.</param>
+        /// <returns>Information for the account.</returns>
+        Task<ServiceResult<AccountInfoModel>> FetchAccountById(Guid accountId);
+        
         /// <summary>
         /// Creates a login token if the provided password is correct.
         /// </summary>

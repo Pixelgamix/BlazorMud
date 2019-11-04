@@ -1,4 +1,5 @@
-﻿using BlazorMud.Contracts.Entities;
+﻿using System;
+using BlazorMud.Contracts.Entities;
 using System.Threading.Tasks;
 
 namespace BlazorMud.Contracts.Database
@@ -18,6 +19,13 @@ namespace BlazorMud.Contracts.Database
         /// <returns><c>true</c> if the account exists, otherwise <c>false</c>.</returns>
         Task<bool> ExistsAsync(string accountName);
 
+        /// <summary>
+        /// Retrieves the <see cref="Account"/> with the specified account id.
+        /// </summary>
+        /// <param name="accountId">The account's id.</param>
+        /// <returns>The account or <c>null</c>.</returns>
+        Task<Account> GetAccountByIdAsync(Guid accountId);
+        
         /// <summary>
         /// Retrieves the <see cref="Account"/> with the specified account name.
         /// </summary>
