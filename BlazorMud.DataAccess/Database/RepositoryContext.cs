@@ -13,12 +13,10 @@ namespace BlazorMud.DataAccess.Database
             get =>  _Session;
             set
             {
-                if (value != _Session)
-                {
-                    _Session = value;
-                    _AccountRepository.Session = _Session;
-                    _CharacterRepository.Session = _Session;
-                }
+                if (value == _Session) return;
+                _Session = value;
+                _AccountRepository.Session = _Session;
+                _CharacterRepository.Session = _Session;
             }
         }
         
