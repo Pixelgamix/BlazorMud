@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{9AFA1F
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 		dockerfile = dockerfile
+		.dockerignore = .dockerignore
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorMud.DataAccess.Test", "BlazorMud.DataAccess.Test\BlazorMud.DataAccess.Test.csproj", "{A727B81E-AD93-4B1B-8F7B-FD03EA8BDF2E}"
